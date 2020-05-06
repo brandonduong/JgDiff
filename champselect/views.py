@@ -135,7 +135,3 @@ def index(request):
 
     context = {'form': form, 'submit_action': "success/"}
     return render(request, 'champselect/index.html', context)
-
-
-def generic(request):
-    return render(request, 'champselect/generic.html')
