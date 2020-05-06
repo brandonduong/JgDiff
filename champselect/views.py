@@ -36,6 +36,8 @@ def calculate(request):
     database = mysql.connector.connect(host="localhost", user="root", passwd=database_pass(), database="matches")
     CURSOR = database.cursor(buffered=True)
 
+    blue_jg = ""
+    red_jg = ""
     form = DropForm(request.POST or None)
     if form.is_valid():
         blue_jg = form.cleaned_data.get("champ")
