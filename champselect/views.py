@@ -1,22 +1,12 @@
 from django.http import HttpResponse
 
 # Create your views here.
-from django.views.generic import CreateView
 from django.shortcuts import render
-from champselect.forms import DropDownForm
-from champselect.models import DropDown
-
 import mysql.connector
 import json
 import urllib.request
-from RIOT_KEY import get_key
 from RIOT_KEY import database_pass
-from riotwatcher import LolWatcher
-
-
-def index(request):
-    return HttpResponse("Hello World!")
-
+from forms import DropForm
 
 def detail(request, question_id):
     return HttpResponse("You're looking at question %s" % question_id)
@@ -46,12 +36,12 @@ def calculate(request):
     database = mysql.connector.connect(host="localhost", user="root", passwd=database_pass(), database="matches")
     CURSOR = database.cursor(buffered=True)
 
-    CURSOR.execute("SELECT champ, champ2 FROM champselect_dropdown")
-    result = CURSOR.fetchall()
-    blue_jg = result[-1][0]
-    blue_jg_id = -1
+    form = DropForm(request.POST or None)
+    if form.is_valid():
+        blue_jg = form.cleaned_data.get("champ")
+        red_jg = form.cleaned_data.get("champ2")
 
-    red_jg = result[-1][1]
+    blue_jg_id = -1
     red_jg_id = -1
 
     blue_jg_kill_participation = 0
@@ -77,7 +67,7 @@ def calculate(request):
     # print(relevant_matches)
 
     for match in relevant_matches:
-        print(match)
+        # print(match)
         # Parse participant string
         participants = match[1].split(",")
         stripped = []
@@ -115,24 +105,37 @@ def calculate(request):
 
     # If no relevant matches, no data
     if blue_jg_kill_participation + red_jg_kill_participation <= 0:
-        print("No available data.")
-        return
+        blue_jg_kill_participation = "0"
+        red_jg_kill_participation = "0"
+        blue_percentage = "0"
+        red_percentage = "0"
+        # print("No available data.")
+        # return HttpResponse("No available data.")
 
-    blue_percentage = str(
-        blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
-    red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
+    else:
+        blue_percentage = str(
+            blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
+        red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
     print(blue_jg + " kills " + red_jg + " " + str(blue_jg_kill_participation) + " (" +
           blue_percentage + "%) " + "times before 15 minutes")
     print(red_jg + " kills " + blue_jg + " " + str(red_jg_kill_participation) + " (" +
           red_percentage + "%) " + "times before 15 minutes")
     print("Data is the result of analyzing", len(relevant_matches), "matches.")
 
-    return HttpResponse("Calculating...\n" + blue_percentage + "\n" + red_percentage)
+    form = DropForm(request.POST or None)
+    context = {'form': form, 'submit_action': "", 'blue_jg': blue_jg, 'red_jg': red_jg, 'blue_jg_kp': blue_jg_kill_participation,
+               'red_jg_kp': red_jg_kill_participation, 'blue_perc': blue_percentage, 'red_perc': red_percentage,
+               'matches': len(relevant_matches),
+               'submitbutton': "Submit"}
+    return render(request, 'champselect/index.html', context)
 
 
-class CreateDropDownView(CreateView):
-    model = DropDown
-    form_class = DropDownForm
-    template_name = "champselect/index.html"
+def index(request):
+    form = DropForm(request.POST or None)
 
-    success_url = "success"
+    context = {'form': form, 'submit_action': "success/"}
+    return render(request, 'champselect/index.html', context)
+
+
+def generic(request):
+    return render(request, 'champselect/generic.html')
