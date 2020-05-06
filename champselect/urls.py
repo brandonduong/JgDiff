@@ -13,6 +13,4 @@ urlpatterns = [
     # path('<int:question_id>/vote/', views.vote, name='vote'),
     # ex: /champselect/success/
     path('success/', views.calculate, name='calculate'),
-    # ex
-    path('generic/', views.generic, name='generic'),
 ]
