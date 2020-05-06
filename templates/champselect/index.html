@@ -20,7 +20,12 @@
 
 				<!-- Header -->
 					<header id="header" class="alt">
-						<span class="logo"><img src="{% static "champselect/images/logo.svg" %}" alt="" /></span>
+                        <ul class="features">
+                            <li>
+                                <span class="image"><img src="{% static "champselect/images/logo.png" %}" alt="" /></span>
+                            </li>
+                        </ul>
+
 						<h1><a href="/champselect/">JgDiff</a></h1>
 						<p>Used to better understand early jungle or lane matchups.<br />
 						Built by <a href="https://github.com/brandonduong">Brandon Duong</a></p>
@@ -30,8 +35,8 @@
 					<nav id="nav">
 						<ul>
 							<li><a href="#intro" class="active">Champion Select</a></li>
-							<li><a href="#first">First Section</a></li>
-							<li><a href="#second">Second Section</a></li>
+							<li><a href="#first">Features</a></li>
+							<li><a href="#second">About</a></li>
 							<li><a href="#cta">Get Started</a></li>
 						</ul>
 					</nav>
@@ -40,6 +45,7 @@
 					<div id="main">
 
 						<!-- Introduction -->
+                        <a id="champselect"></a>
 							<section id="intro" class="main">
 								<div class="spotlight">
 									<div class="content">
@@ -67,7 +73,7 @@
                                         {% endif %}
 
                                         {% if submit_action == "success/" %}
-                                            <form action="success/" method="POST">{% csrf_token %}
+                                            <form action="success/#champselect" method="POST">{% csrf_token %}
                                                 {{ form.as_p }}
                                             <input type="Submit" name="submit" value="Submit"/>
                                             </form>
@@ -97,36 +103,31 @@
 						<!-- First Section -->
 							<section id="first" class="main special">
 								<header class="major">
-									<h2>Magna veroeros</h2>
+									<h2>Features</h2>
 								</header>
 								<ul class="features">
 									<li>
-										<span class="icon solid major style1 fa-code"></span>
-										<h3>Ipsum consequat</h3>
-										<p>Sed lorem amet ipsum dolor et amet nullam consequat a feugiat consequat tempus veroeros sed consequat.</p>
+										<span class="image"><img src= "{% static "champselect/images/map.png" %}" alt="" /></span>
+										<h3>Calculate early matchups!</h3>
+										<p>Find out which champion should on average, be stronger in the early game <br>(in 1v1s, 2v2s, etc).</p>
 									</li>
 									<li>
-										<span class="icon major style3 fa-copy"></span>
-										<h3>Amed sed feugiat</h3>
-										<p>Sed lorem amet ipsum dolor et amet nullam consequat a feugiat consequat tempus veroeros sed consequat.</p>
+										<span class="image"><img src= "{% static "champselect/images/ranks.png" %}" alt="" /></span>
+										<h3>Maximize your chance of victory!</h3>
+										<p>With this knowledge, you can maximize your chance of winning by adapting your early path and playstyle!</p>
 									</li>
 									<li>
-										<span class="icon major style5 fa-gem"></span>
-										<h3>Dolor nullam</h3>
-										<p>Sed lorem amet ipsum dolor et amet nullam consequat a feugiat consequat tempus veroeros sed consequat.</p>
+										<span class="image"><img src= "{% static "champselect/images/bigbrain.png" %}" alt="" /></span>
+										<h3>Test your knowledege!</h3>
+										<p>Try and predict the matchups before they are even calculated to challenge your overall game knowledge!</p>
 									</li>
 								</ul>
-								<footer class="major">
-									<ul class="actions special">
-										<li><a href="generic.html" class="button">Learn More</a></li>
-									</ul>
-								</footer>
 							</section>
 
 						<!-- Second Section -->
 							<section id="second" class="main special">
 								<header class="major">
-									<h2>Ipsum consequat</h2>
+									<h2>About</h2>
 									<p>Donec imperdiet consequat consequat. Suspendisse feugiat congue<br />
 									posuere. Nulla massa urna, fermentum eget quam aliquet.</p>
 								</header>
