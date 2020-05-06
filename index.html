@@ -48,14 +48,14 @@
 										</header>
 
 
-										<form action="" method="post">{% csrf_token %}
+										<form action="" method="post" name="dropdownchamps">{% csrf_token %}
                                             <h3>Blue Side Champion</h3>
                                             {{ form.champ }}
                                             <br>
                                             <h3>Red Side Champion</h3>
                                             {{ form.champ2 }}
                                             <br>
-                                            <input type="submit" value="Create" />
+                                            <input type="submit" value="Calculate" />
                                         </form>
 
 
