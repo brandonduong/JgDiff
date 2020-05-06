@@ -43,9 +43,11 @@ CHAMPS = []
 for o in champ_info:
     CHAMPS.append((o["name"], o["name"]))
 
+CHAMPS.sort()
+CHAMPS.remove(("None", "None"))
 
 class DropDown(models.Model):
-    champ = models.CharField(max_length=25, choices=CHAMPS, default='Annie')
+    champ = models.CharField(max_length=25, choices=CHAMPS, default='Aatrox')
     champ2 = models.CharField(max_length=25, choices=CHAMPS, default='Ahri')
 
     def __str__(self):

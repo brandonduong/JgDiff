@@ -33,6 +33,7 @@ def vote(request, question_id):
 class AppURLopener(urllib.request.FancyURLopener):
     version = "Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"
 
+
 def calculate(request):
     # region = input("What region to analyze? (br1, eun1, na1, etc.) : ")
     # tier = input("What tier to analyze? (DIAMOND, GOLD, etc.) : ")
@@ -133,4 +134,5 @@ class CreateDropDownView(CreateView):
     model = DropDown
     form_class = DropDownForm
     template_name = "champselect/index.html"
+
     success_url = "success"
