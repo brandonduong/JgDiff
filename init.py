@@ -1,7 +1,7 @@
 import urllib
 import json
 import mysql.connector
-from riotwatcher import LolWatcher, ApiError
+from riotwatcher import LolWatcher
 from RIOT_KEY import get_key
 from RIOT_KEY import database_pass
 
