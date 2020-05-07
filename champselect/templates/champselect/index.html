@@ -26,7 +26,7 @@
                             </li>
                         </ul>
 
-						<h1><a href="/">JgDiff</a></h1>
+						<h1><a href="/champselect/">JgDiff</a></h1>
 						<p>Used to better understand early jungle or lane matchups.<br />
 						Built by <a href="https://github.com/brandonduong">Brandon Duong</a></p>
 					</header>
@@ -81,9 +81,9 @@
 
                                         {% if submitbutton == "Submit" %}
                                             <h3>{{ blue_jg }} kills {{ red_jg }} {{ blue_jg_kp }} ({{ blue_perc }}%)
-                                            times before 15 minutes. Average of {{ blue_avg }} kills per match. <br>
+                                            times before 15 minutes. Average of {{ blue_avg }} kills per match. <br> <br>
                                                 {{ red_jg }} kills {{ blue_jg }} {{ red_jg_kp }} ({{ red_perc }}%)
-                                            times before 15 minutes. Average of {{ red_avg }} kills per match
+                                            times before 15 minutes. Average of {{ red_avg }} kills per match.
                                             </h3>
                                             <p class="copyright">This data is the result of analyzing a whole {{ matches }} matches.</p>
                                         {% endif %}
