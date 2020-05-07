@@ -105,6 +105,9 @@ def calculate(request):
             elif str(red_player_id) in event[2].split(",") or str(red_player_id) == event[0]:
                 red_jg_kill_participation += 1
 
+    CURSOR.close()
+    database.close()
+
     # If no relevant matches, no data
     if blue_jg_kill_participation + red_jg_kill_participation <= 0:
         blue_jg_kill_participation = 0
@@ -135,6 +138,7 @@ def calculate(request):
                'blue_avg': blue_avg, 'red_avg': red_avg,
                'matches': len(relevant_matches),
                'submitbutton': "Submit"}
+
     return render(request, 'champselect/index.html', context)
 
 
