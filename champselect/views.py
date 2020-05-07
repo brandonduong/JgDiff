@@ -107,10 +107,12 @@ def calculate(request):
 
     # If no relevant matches, no data
     if blue_jg_kill_participation + red_jg_kill_participation <= 0:
-        blue_jg_kill_participation = "0"
-        red_jg_kill_participation = "0"
+        blue_jg_kill_participation = 0
+        red_jg_kill_participation = 0
         blue_percentage = "0"
         red_percentage = "0"
+        blue_avg = 0
+        red_avg = 0
         # print("No available data.")
         # return HttpResponse("No available data.")
 
@@ -118,6 +120,8 @@ def calculate(request):
         blue_percentage = str(
             blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
         red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
+        blue_avg = round(blue_jg_kill_participation/len(relevant_matches), 2)
+        red_avg = round(red_jg_kill_participation/len(relevant_matches), 2)
 
     print(blue_jg + " kills " + red_jg + " " + str(blue_jg_kill_participation) + " (" +
           blue_percentage + "%) " + "times before 15 minutes. Average of " + str(blue_jg_kill_participation/len(relevant_matches)) + " kills per match (before 15 minutes).")
@@ -128,7 +132,7 @@ def calculate(request):
     form = DropForm(request.POST or None)
     context = {'form': form, 'submit_action': "", 'blue_jg': blue_jg, 'red_jg': red_jg, 'blue_jg_kp': blue_jg_kill_participation,
                'red_jg_kp': red_jg_kill_participation, 'blue_perc': round(float(blue_percentage), 2), 'red_perc': round(float(red_percentage),2),
-               'blue_avg': round(blue_jg_kill_participation/len(relevant_matches), 2), 'red_avg': round(red_jg_kill_participation/len(relevant_matches), 2),
+               'blue_avg': blue_avg, 'red_avg': red_avg,
                'matches': len(relevant_matches),
                'submitbutton': "Submit"}
     return render(request, 'champselect/index.html', context)
