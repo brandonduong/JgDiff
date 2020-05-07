@@ -118,15 +118,17 @@ def calculate(request):
         blue_percentage = str(
             blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
         red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
+
     print(blue_jg + " kills " + red_jg + " " + str(blue_jg_kill_participation) + " (" +
-          blue_percentage + "%) " + "times before 15 minutes")
+          blue_percentage + "%) " + "times before 15 minutes. Average of " + str(blue_jg_kill_participation/len(relevant_matches)) + " kills per match (before 15 minutes).")
     print(red_jg + " kills " + blue_jg + " " + str(red_jg_kill_participation) + " (" +
-          red_percentage + "%) " + "times before 15 minutes")
+          red_percentage + "%) " + "times before 15 minutes. Average of " + str(red_jg_kill_participation/len(relevant_matches)) + " kills per match (before 15 minutes).")
     print("Data is the result of analyzing", len(relevant_matches), "matches.")
 
     form = DropForm(request.POST or None)
     context = {'form': form, 'submit_action': "", 'blue_jg': blue_jg, 'red_jg': red_jg, 'blue_jg_kp': blue_jg_kill_participation,
                'red_jg_kp': red_jg_kill_participation, 'blue_perc': blue_percentage, 'red_perc': red_percentage,
+               'blue_avg': blue_jg_kill_participation/len(relevant_matches), 'red_avg': red_jg_kill_participation/len(relevant_matches),
                'matches': len(relevant_matches),
                'submitbutton': "Submit"}
     return render(request, 'champselect/index.html', context)

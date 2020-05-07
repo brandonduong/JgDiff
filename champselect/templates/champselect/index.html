@@ -68,7 +68,7 @@
                                         {% if submit_action == "" %}
                                             <form action="" method="POST">{% csrf_token %}
                                                 {{ form.as_p }}
-                                            <input type="Submit" name="submit" value="Submit"/>
+                                            <input type="Submit" name="submit" value="Calculate"/>
                                             </form>
                                         {% endif %}
 
@@ -81,9 +81,9 @@
 
                                         {% if submitbutton == "Submit" %}
                                             <h3>{{ blue_jg }} kills {{ red_jg }} {{ blue_jg_kp }} ({{ blue_perc }}%)
-                                            times before 15 minutes. <br>
+                                            times before 15 minutes. Average of {{ blue_avg }} kills per match. <br>
                                                 {{ red_jg }} kills {{ blue_jg }} {{ red_jg_kp }} ({{ red_perc }}%)
-                                            times before 15 minutes.
+                                            times before 15 minutes. Average of {{ red_avg }} kills per match
                                             </h3>
                                             <p class="copyright">This data is the result of analyzing a whole {{ matches }} matches.</p>
                                         {% endif %}
