@@ -5,8 +5,8 @@ from django.shortcuts import render
 import mysql.connector
 import json
 import urllib.request
-from RIOT_KEY import database_pass
-from forms import DropForm
+from .RIOT_KEY import database_pass
+from .forms import DropForm
 
 def detail(request, question_id):
     return HttpResponse("You're looking at question %s" % question_id)

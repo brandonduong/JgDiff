@@ -1,8 +1,5 @@
 from django.db import models
 from django.utils import timezone
-import urllib
-import urllib.request
-import json
 import datetime
 
 
