@@ -62,8 +62,8 @@ def calculate(request):
             red_jg_id = o["id"]
 
     # Only inspect matches that have both input champions
-    sql = "SELECT matchId, participants FROM matches WHERE participants LIKE %s AND participants LIKE %s"
-    adr = ("% " + str(blue_jg_id) + "%", "% " + str(red_jg_id) + "%")
+    sql = "SELECT matchId, participants FROM matches WHERE (participants LIKE %s OR participants LIKE %s) AND (participants LIKE %s OR participants LIKE %s)"
+    adr = ("% " + str(blue_jg_id) + ",%", "% " + str(blue_jg_id), "% " + str(red_jg_id) + ",%", "% " + str(red_jg_id))
     CURSOR.execute(sql, adr)
     relevant_matches = CURSOR.fetchall()
     # print(relevant_matches)
