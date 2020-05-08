@@ -68,6 +68,7 @@ def calculate(request):
     relevant_matches = CURSOR.fetchall()
     # print(relevant_matches)
 
+    relevant_match_counter = 0
     for match in relevant_matches:
         # print(match)
         # Parse participant string
@@ -79,6 +80,11 @@ def calculate(request):
         # Find player ids from champion ids
         blue_player_id = stripped.index(str(blue_jg_id)) + 1
         red_player_id = stripped.index(str(red_jg_id)) + 1
+
+        # Skip this match if the two champs specified are on the same team
+        if not ((blue_player_id <= 5 and red_player_id > 5) or (red_player_id <= 5 and blue_player_id > 5)):
+            continue
+        relevant_match_counter += 1
 
         # Select all events from this match that involve the death of either blue or red champion
         sql = "SELECT killerId, victimId, assistingParticipantIds FROM events WHERE victimId = %s AND matchId = %s"
@@ -123,20 +129,20 @@ def calculate(request):
         blue_percentage = str(
             blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
         red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
-        blue_avg = round(blue_jg_kill_participation/len(relevant_matches), 2)
-        red_avg = round(red_jg_kill_participation/len(relevant_matches), 2)
+        blue_avg = round(blue_jg_kill_participation/relevant_match_counter, 2)
+        red_avg = round(red_jg_kill_participation/relevant_match_counter, 2)
 
     print(blue_jg + " kills " + red_jg + " " + str(blue_jg_kill_participation) + " (" +
-          blue_percentage + "%) " + "times before 15 minutes. Average of " + str(blue_jg_kill_participation/len(relevant_matches)) + " kills per match (before 15 minutes).")
+          blue_percentage + "%) " + "times before 15 minutes. Average of " + str(blue_jg_kill_participation/relevant_match_counter) + " kills per match (before 15 minutes).")
     print(red_jg + " kills " + blue_jg + " " + str(red_jg_kill_participation) + " (" +
-          red_percentage + "%) " + "times before 15 minutes. Average of " + str(red_jg_kill_participation/len(relevant_matches)) + " kills per match (before 15 minutes).")
-    print("Data is the result of analyzing", len(relevant_matches), "matches.")
+          red_percentage + "%) " + "times before 15 minutes. Average of " + str(red_jg_kill_participation/relevant_match_counter) + " kills per match (before 15 minutes).")
+    print("Data is the result of analyzing", relevant_match_counter, "matches.")
 
     form = DropForm(request.POST or None)
     context = {'form': form, 'submit_action': "", 'blue_jg': blue_jg, 'red_jg': red_jg, 'blue_jg_kp': blue_jg_kill_participation,
                'red_jg_kp': red_jg_kill_participation, 'blue_perc': round(float(blue_percentage), 2), 'red_perc': round(float(red_percentage),2),
                'blue_avg': blue_avg, 'red_avg': red_avg,
-               'matches': len(relevant_matches),
+               'matches': relevant_match_counter,
                'submitbutton': "Submit"}
 
     return render(request, 'champselect/index.html', context)
