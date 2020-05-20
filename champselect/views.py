@@ -43,35 +43,41 @@ def calculate(request):
         blue_jg = form.cleaned_data.get("champ")
         red_jg = form.cleaned_data.get("champ2")
 
-    try:
+    sql = "SELECT * from matchups WHERE blue_champ = %s AND red_champ = %s"
+    adr = (blue_jg, red_jg)
+    CURSOR.execute(sql, adr)
+    matchup_data = CURSOR.fetchall()
+
+    # If no data, try flipping champ sides
+    if not matchup_data:
+        tmp = red_jg
+        red_jg = blue_jg
+        blue_jg = tmp
+
         sql = "SELECT * from matchups WHERE blue_champ = %s AND red_champ = %s"
         adr = (blue_jg, red_jg)
         CURSOR.execute(sql, adr)
         matchup_data = CURSOR.fetchall()
 
-    except:
-        sql = "SELECT * from matchups WHERE blue_champ = %s AND red_champ = %s"
-        adr = (red_jg, blue_jg)
-        CURSOR.execute(sql, adr)
-        matchup_data = CURSOR.fetchall()
-
     print(matchup_data)
-    blue_jg_kill_participation = int(matchup_data[0][2])
-    red_jg_kill_participation = int(matchup_data[0][3])
-    relevant_match_counter = int(matchup_data[0][4])
 
-    # If no relevant matches, no data
-    if blue_jg_kill_participation + red_jg_kill_participation <= 0:
+    # If still no data
+    if not matchup_data:
         blue_jg_kill_participation = 0
         red_jg_kill_participation = 0
         blue_percentage = "0"
         red_percentage = "0"
         blue_avg = 0
         red_avg = 0
+        relevant_match_counter = 0
         # print("No available data.")
         # return HttpResponse("No available data.")
 
     else:
+        blue_jg_kill_participation = int(matchup_data[0][2])
+        red_jg_kill_participation = int(matchup_data[0][3])
+        relevant_match_counter = int(matchup_data[0][4])
+
         blue_percentage = str(
             blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
         red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
