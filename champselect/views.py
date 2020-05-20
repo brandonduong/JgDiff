@@ -43,76 +43,22 @@ def calculate(request):
         blue_jg = form.cleaned_data.get("champ")
         red_jg = form.cleaned_data.get("champ2")
 
-    blue_jg_id = -1
-    red_jg_id = -1
-
-    blue_jg_kill_participation = 0
-    red_jg_kill_participation = 0
-
-    with OPENER.open(
-            "http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json") as url:
-        champ_info = json.loads(url.read().decode())
-
-    # Convert input champion name to champion id
-    for o in champ_info:
-        if o["name"] == blue_jg:
-            blue_jg_id = o["id"]
-
-        elif o["name"] == red_jg:
-            red_jg_id = o["id"]
-
-    # Only inspect matches that have both input champions
-    sql = "SELECT matchId, participants FROM matches WHERE (participants LIKE %s OR participants LIKE %s) AND (participants LIKE %s OR participants LIKE %s)"
-    adr = ("% " + str(blue_jg_id) + ",%", "% " + str(blue_jg_id), "% " + str(red_jg_id) + ",%", "% " + str(red_jg_id))
-    CURSOR.execute(sql, adr)
-    relevant_matches = CURSOR.fetchall()
-    # print(relevant_matches)
-
-    relevant_match_counter = 0
-    for match in relevant_matches:
-        # print(match)
-        # Parse participant string
-        participants = match[1].split(",")
-        stripped = []
-        for participant in participants:
-            stripped.append(participant.strip())
-
-        # Find player ids from champion ids
-        blue_player_id = stripped.index(str(blue_jg_id)) + 1
-        red_player_id = stripped.index(str(red_jg_id)) + 1
-
-        # Skip this match if the two champs specified are on the same team
-        if not ((blue_player_id <= 5 and red_player_id > 5) or (red_player_id <= 5 and blue_player_id > 5)):
-            continue
-        relevant_match_counter += 1
-
-        # Select all events from this match that involve the death of either blue or red champion
-        sql = "SELECT killerId, victimId, assistingParticipantIds FROM events WHERE victimId = %s AND matchId = %s"
-        adr = (str(blue_player_id), match[0])
+    try:
+        sql = "SELECT * from matchups WHERE blue_champ = %s AND red_champ = %s"
+        adr = (blue_jg, red_jg)
         CURSOR.execute(sql, adr)
-        relevant_events = CURSOR.fetchall()
+        matchup_data = CURSOR.fetchall()
 
-        sql = "SELECT killerId, victimId, assistingParticipantIds FROM events WHERE victimId = %s AND matchId = %s"
-        adr = (str(red_player_id), match[0])
+    except:
+        sql = "SELECT * from matchups WHERE blue_champ = %s AND red_champ = %s"
+        adr = (red_jg, blue_jg)
         CURSOR.execute(sql, adr)
-        relevant_events2 = CURSOR.fetchall()
+        matchup_data = CURSOR.fetchall()
 
-        relevant_events += relevant_events2
-        # print(relevant_events, blue_player_id, red_player_id)
-
-        # Analyze all events that involve the death of either blue or red champion
-        for event in relevant_events:
-            # print(event)
-            # Analyze all champion kills that involve blue or red side jungler
-            # event[2] = asssisting champs, event[0] = killer champ
-            if str(blue_player_id) in event[2].split(",") or str(blue_player_id) == event[0]:
-                blue_jg_kill_participation += 1
-
-            elif str(red_player_id) in event[2].split(",") or str(red_player_id) == event[0]:
-                red_jg_kill_participation += 1
-
-    CURSOR.close()
-    database.close()
+    print(matchup_data)
+    blue_jg_kill_participation = int(matchup_data[0][2])
+    red_jg_kill_participation = int(matchup_data[0][3])
+    relevant_match_counter = int(matchup_data[0][4])
 
     # If no relevant matches, no data
     if blue_jg_kill_participation + red_jg_kill_participation <= 0:
