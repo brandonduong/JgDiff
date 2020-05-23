@@ -80,6 +80,12 @@
                                         {% endif %}
 
                                         {% if submitbutton == "Submit" %}
+                                            {% if blue_jg == "" %}
+                                                <script>
+                                                window.location.replace("/champselect/");
+                                                </script>
+                                            {% endif %}
+
                                             <h3>{{ blue_jg }} kills {{ red_jg }} {{ blue_jg_kp }} ({{ blue_perc }}%)
                                             times before 15 minutes. Average of {{ blue_avg }} kills per match. <br> <br>
                                                 {{ red_jg }} kills {{ blue_jg }} {{ red_jg_kp }} ({{ red_perc }}%)
