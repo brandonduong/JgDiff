@@ -189,6 +189,17 @@ def calculate():
             database.commit()
 
 
+def initialize_new_patch():
+    CURSOR.execute("UPDATE matchups SET blue_kills = 0")
+    CURSOR.execute("UPDATE matchups SET red_kills = 0")
+    CURSOR.execute("UPDATE matchups SET relevent_matches = 0")
+    CURSOR.execute("TRUNCATE matches")
+    CURSOR.execute("TRUNCATE events")
+    database.commit()
+
 if __name__ == "__main__":
+    # Use only if new patch is out
+    # initialize_new_patch()
+
     while True:
         main("na1")  # Create database for north american servers
