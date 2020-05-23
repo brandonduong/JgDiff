@@ -148,9 +148,9 @@ def calculate():
                     elif str(red_player_id) in event[2].split(",") or str(red_player_id) == event[0]:
                         red_jg_kill_participation += 1
 
-            # If no relevant matches, no data
+            # If no relevant events, no new data
             if blue_jg_kill_participation + red_jg_kill_participation <= 0:
-                print("No available data.")
+                print("No new data.")
                 continue
 
             else:
@@ -160,6 +160,7 @@ def calculate():
                 blue_avg = round(blue_jg_kill_participation / relevant_match_counter, 2)
                 red_avg = round(red_jg_kill_participation / relevant_match_counter, 2)
 
+            # Prints new info
             print(champ_info_1["name"] + " kills " + champ_info_2["name"] + " " + str(blue_jg_kill_participation) + " (" +
                   blue_percentage + "%) " + "times before 15 minutes. Average of " + str(
                 blue_jg_kill_participation / relevant_match_counter) + " kills per match (before 15 minutes).")
@@ -185,7 +186,7 @@ def calculate():
             val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_1["name"], champ_info_2["name"])
             CURSOR.execute(sql, val)
             sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
-            val = (str(relevant_match_counter + int(values[0][2])), champ_info_1["name"], champ_info_2["name"])
+            val = (str(relevant_match_counter), champ_info_1["name"], champ_info_2["name"])
             CURSOR.execute(sql, val)
             database.commit()
 
@@ -233,5 +234,5 @@ if __name__ == "__main__":
     # initialize_new_patch()
 
     while True:
-        main("na1")  # Create database for north american servers
+        # main("na1")  # Create database for north american servers
         calculate()  # Calculate/Update matchups for given events
