@@ -77,23 +77,12 @@ def main(region):
         print("examined: ", num_examined, "matches")
         num_examined += 1
 
-    calculate()
-
 def calculate():
     # Precalculates/updates matchups and stores that information in database
 
     with OPENER.open(
             "http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json") as url:
         champ_info = json.loads(url.read().decode())
-
-    # Used to skip all that have already been examined
-    CURSOR.execute("SELECT blue_champ, red_champ FROM matchups")
-    select = CURSOR.fetchall()
-    already_examined = []
-    for i in select:
-        already_examined.append(i)
-
-    print (already_examined)
 
     for champ_info_1 in champ_info:
         # champ_info_1["name"]
@@ -102,10 +91,6 @@ def calculate():
         for champ_info_2 in champ_info:
             # Skip mirror matchups + reverse side matchups (Don't calculate Camille vs Aatrox if Aatrox vs Camille done)
             if champ_info.index(champ_info_2) <= champ_info.index(champ_info_1):
-                continue
-
-            # Skipped already calculated matchups
-            elif (champ_info_1["name"], champ_info_2["name"]) in already_examined:
                 continue
 
             red_jg_id = champ_info_2["id"]
@@ -183,13 +168,59 @@ def calculate():
                 red_jg_kill_participation / relevant_match_counter) + " kills per match (before 15 minutes).")
             print("Data is the result of analyzing", relevant_match_counter, "matches.")
 
-            sql = "INSERT IGNORE INTO matchups (blue_champ, red_champ, blue_kills, red_kills, relevent_matches) VALUES (%s, %s, %s, %s, %s)"
-            val = (champ_info_1["name"], champ_info_2["name"], blue_jg_kill_participation, red_jg_kill_participation, relevant_match_counter)
+
+            sql = "SELECT blue_kills, red_kills, relevent_matches FROM matchups WHERE blue_champ = %s AND red_champ = %s"
+            val = (champ_info_1["name"], champ_info_2["name"])
+            CURSOR.execute(sql, val)
+            values = CURSOR.fetchall()
+
+            print(values)
+            print(blue_jg_kill_participation, red_jg_kill_participation, relevant_match_counter)
+
+
+            sql = "UPDATE matchups SET blue_kills = %s WHERE blue_champ = %s AND red_champ = %s"
+            val = (str(blue_jg_kill_participation + int(values[0][0])), champ_info_1["name"], champ_info_2["name"])
+            CURSOR.execute(sql, val)
+            sql = "UPDATE matchups SET red_kills = %s WHERE blue_champ = %s AND red_champ = %s"
+            val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_1["name"], champ_info_2["name"])
+            CURSOR.execute(sql, val)
+            sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
+            val = (str(relevant_match_counter + int(values[0][2])), champ_info_1["name"], champ_info_2["name"])
             CURSOR.execute(sql, val)
             database.commit()
 
+    # Remove all analyzed events to ensure no repeat calculations
+    CURSOR.execute("TRUNCATE events")
+
 
 def initialize_new_patch():
+    # Initialize and reset all databases
+    with OPENER.open(
+            "http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json") as url:
+        champ_info = json.loads(url.read().decode())
+
+    CURSOR.execute("SELECT blue_champ, red_champ FROM matchups")
+    select = CURSOR.fetchall()
+    already_examined = []
+    for i in select:
+        already_examined.append(i)
+
+    for champ_info_1 in champ_info:
+        for champ_info_2 in champ_info:
+            # Skip mirror matchups + reverse side matchups (Don't calculate Camille vs Aatrox if Aatrox vs Camille done)
+            if champ_info.index(champ_info_2) <= champ_info.index(champ_info_1):
+                continue
+
+            # Skip already calculated matchups
+            elif (champ_info_1["name"], champ_info_2["name"]) in already_examined:
+                continue
+
+            # Skip None
+            elif champ_info_1["name"] == "None" or champ_info_2["name"] == "None":
+                continue
+
+            CURSOR.execute("INSERT INTO matchups (blue_champ, red_champ) values (%s, %s)", (champ_info_1["name"], champ_info_2["name"]))
+
     CURSOR.execute("UPDATE matchups SET blue_kills = 0")
     CURSOR.execute("UPDATE matchups SET red_kills = 0")
     CURSOR.execute("UPDATE matchups SET relevent_matches = 0")
@@ -203,3 +234,4 @@ if __name__ == "__main__":
 
     while True:
         main("na1")  # Create database for north american servers
+        calculate()  # Calculate/Update matchups for given events
