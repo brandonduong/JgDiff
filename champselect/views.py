@@ -61,11 +61,10 @@ def calculate(request):
 
     print(matchup_data)
 
-    blue_jg_kill_participation = int(matchup_data[0][2])
-    red_jg_kill_participation = int(matchup_data[0][3])
-    relevant_match_counter = int(matchup_data[0][4])
-
     try:
+        blue_jg_kill_participation = int(matchup_data[0][2])
+        red_jg_kill_participation = int(matchup_data[0][3])
+        relevant_match_counter = int(matchup_data[0][4])
         blue_percentage = str(
             blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
         red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
@@ -73,6 +72,9 @@ def calculate(request):
         red_avg = round(red_jg_kill_participation/relevant_match_counter, 2)
 
     except:
+        blue_jg_kill_participation = 0
+        red_jg_kill_participation = 0
+        relevant_match_counter = 0
         blue_percentage = "0"
         red_percentage = "0"
         blue_avg = 0
