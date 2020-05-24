@@ -169,26 +169,56 @@ def calculate():
                 red_jg_kill_participation / relevant_match_counter) + " kills per match (before 15 minutes).")
             print("Data is the result of analyzing", relevant_match_counter, "matches.")
 
-
             sql = "SELECT blue_kills, red_kills, relevent_matches FROM matchups WHERE blue_champ = %s AND red_champ = %s"
             val = (champ_info_1["name"], champ_info_2["name"])
             CURSOR.execute(sql, val)
             values = CURSOR.fetchall()
 
-            print(values)
+            if values:
+                sql = "UPDATE matchups SET blue_kills = %s WHERE blue_champ = %s AND red_champ = %s"
+                val = (str(blue_jg_kill_participation + int(values[0][0])), champ_info_1["name"], champ_info_2["name"])
+                CURSOR.execute(sql, val)
+                sql = "UPDATE matchups SET red_kills = %s WHERE blue_champ = %s AND red_champ = %s"
+                val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_1["name"], champ_info_2["name"])
+                CURSOR.execute(sql, val)
+                sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
+                val = (str(relevant_match_counter), champ_info_1["name"], champ_info_2["name"])
+                CURSOR.execute(sql, val)
+
+            # If matchup is stored in reverse, reverse data
+            elif not values:
+                sql = "SELECT blue_kills, red_kills, relevent_matches from matchups WHERE blue_champ = %s AND red_champ = %s"
+                val = (champ_info_2["name"], champ_info_1["name"])
+                CURSOR.execute(sql, val)
+                values = CURSOR.fetchall()
+
+                sql = "UPDATE matchups SET blue_kills = %s WHERE blue_champ = %s AND red_champ = %s"
+                val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_2["name"], champ_info_1["name"])
+                CURSOR.execute(sql, val)
+                sql = "UPDATE matchups SET red_kills = %s WHERE blue_champ = %s AND red_champ = %s"
+                val = (str(blue_jg_kill_participation + int(values[0][0])), champ_info_2["name"], champ_info_1["name"])
+                CURSOR.execute(sql, val)
+                sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
+                val = (str(relevant_match_counter), champ_info_2["name"], champ_info_1["name"])
+                CURSOR.execute(sql, val)
+
+            print(values, champ_info_1["name"], champ_info_2["name"])
             print(blue_jg_kill_participation, red_jg_kill_participation, relevant_match_counter)
 
-
-            sql = "UPDATE matchups SET blue_kills = %s WHERE blue_champ = %s AND red_champ = %s"
-            val = (str(blue_jg_kill_participation + int(values[0][0])), champ_info_1["name"], champ_info_2["name"])
-            CURSOR.execute(sql, val)
-            sql = "UPDATE matchups SET red_kills = %s WHERE blue_champ = %s AND red_champ = %s"
-            val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_1["name"], champ_info_2["name"])
-            CURSOR.execute(sql, val)
-            sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
-            val = (str(relevant_match_counter), champ_info_1["name"], champ_info_2["name"])
-            CURSOR.execute(sql, val)
             database.commit()
+
+            sql = "SELECT blue_kills, red_kills, relevent_matches FROM matchups WHERE blue_champ = %s AND red_champ = %s"
+            val = (champ_info_1["name"], champ_info_2["name"])
+            CURSOR.execute(sql, val)
+            values = CURSOR.fetchall()
+            print("new values: ", values)
+
+            sql = "SELECT blue_kills, red_kills, relevent_matches FROM matchups WHERE blue_champ = %s AND red_champ = %s"
+            val = (champ_info_2["name"], champ_info_1["name"])
+            CURSOR.execute(sql, val)
+            values = CURSOR.fetchall()
+            print("new values: ", values)
+
 
     # Remove all analyzed events to ensure no repeat calculations
     CURSOR.execute("TRUNCATE events")
@@ -234,5 +264,5 @@ if __name__ == "__main__":
     # initialize_new_patch()
 
     while True:
-        # main("na1")  # Create database for north american servers
+        main("na1")  # Create database for north american servers
         calculate()  # Calculate/Update matchups for given events
