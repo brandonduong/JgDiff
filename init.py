@@ -157,8 +157,6 @@ def calculate():
                 blue_percentage = str(
                     blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
                 red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
-                blue_avg = round(blue_jg_kill_participation / relevant_match_counter, 2)
-                red_avg = round(red_jg_kill_participation / relevant_match_counter, 2)
 
             # Prints new info
             print(champ_info_1["name"] + " kills " + champ_info_2["name"] + " " + str(blue_jg_kill_participation) + " (" +
@@ -174,33 +172,15 @@ def calculate():
             CURSOR.execute(sql, val)
             values = CURSOR.fetchall()
 
-            if values:
-                sql = "UPDATE matchups SET blue_kills = %s WHERE blue_champ = %s AND red_champ = %s"
-                val = (str(blue_jg_kill_participation + int(values[0][0])), champ_info_1["name"], champ_info_2["name"])
-                CURSOR.execute(sql, val)
-                sql = "UPDATE matchups SET red_kills = %s WHERE blue_champ = %s AND red_champ = %s"
-                val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_1["name"], champ_info_2["name"])
-                CURSOR.execute(sql, val)
-                sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
-                val = (str(relevant_match_counter), champ_info_1["name"], champ_info_2["name"])
-                CURSOR.execute(sql, val)
-
-            # If matchup is stored in reverse, reverse data
-            elif not values:
-                sql = "SELECT blue_kills, red_kills, relevent_matches from matchups WHERE blue_champ = %s AND red_champ = %s"
-                val = (champ_info_2["name"], champ_info_1["name"])
-                CURSOR.execute(sql, val)
-                values = CURSOR.fetchall()
-
-                sql = "UPDATE matchups SET blue_kills = %s WHERE blue_champ = %s AND red_champ = %s"
-                val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_2["name"], champ_info_1["name"])
-                CURSOR.execute(sql, val)
-                sql = "UPDATE matchups SET red_kills = %s WHERE blue_champ = %s AND red_champ = %s"
-                val = (str(blue_jg_kill_participation + int(values[0][0])), champ_info_2["name"], champ_info_1["name"])
-                CURSOR.execute(sql, val)
-                sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
-                val = (str(relevant_match_counter), champ_info_2["name"], champ_info_1["name"])
-                CURSOR.execute(sql, val)
+            sql = "UPDATE matchups SET blue_kills = %s WHERE blue_champ = %s AND red_champ = %s"
+            val = (str(blue_jg_kill_participation + int(values[0][0])), champ_info_1["name"], champ_info_2["name"])
+            CURSOR.execute(sql, val)
+            sql = "UPDATE matchups SET red_kills = %s WHERE blue_champ = %s AND red_champ = %s"
+            val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_1["name"], champ_info_2["name"])
+            CURSOR.execute(sql, val)
+            sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
+            val = (str(relevant_match_counter), champ_info_1["name"], champ_info_2["name"])
+            CURSOR.execute(sql, val)
 
             print(values, champ_info_1["name"], champ_info_2["name"])
             print(blue_jg_kill_participation, red_jg_kill_participation, relevant_match_counter)
