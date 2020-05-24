@@ -61,34 +61,28 @@ def calculate(request):
 
     print(matchup_data)
 
-    # If still no data
-    if not matchup_data:
-        blue_jg_kill_participation = 0
-        red_jg_kill_participation = 0
-        blue_percentage = "0"
-        red_percentage = "0"
-        blue_avg = 0
-        red_avg = 0
-        relevant_match_counter = 0
-        # print("No available data.")
-        # return HttpResponse("No available data.")
+    blue_jg_kill_participation = int(matchup_data[0][2])
+    red_jg_kill_participation = int(matchup_data[0][3])
+    relevant_match_counter = int(matchup_data[0][4])
 
-    else:
-        blue_jg_kill_participation = int(matchup_data[0][2])
-        red_jg_kill_participation = int(matchup_data[0][3])
-        relevant_match_counter = int(matchup_data[0][4])
-
+    try:
         blue_percentage = str(
             blue_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
         red_percentage = str(red_jg_kill_participation / (blue_jg_kill_participation + red_jg_kill_participation) * 100)
         blue_avg = round(blue_jg_kill_participation/relevant_match_counter, 2)
         red_avg = round(red_jg_kill_participation/relevant_match_counter, 2)
 
-        print(blue_jg + " kills " + red_jg + " " + str(blue_jg_kill_participation) + " (" +
-              blue_percentage + "%) " + "times before 15 minutes. Average of " + str(blue_jg_kill_participation/relevant_match_counter) + " kills per match (before 15 minutes).")
-        print(red_jg + " kills " + blue_jg + " " + str(red_jg_kill_participation) + " (" +
-              red_percentage + "%) " + "times before 15 minutes. Average of " + str(red_jg_kill_participation/relevant_match_counter) + " kills per match (before 15 minutes).")
-        print("Data is the result of analyzing", relevant_match_counter, "matches.")
+    except:
+        blue_percentage = "0"
+        red_percentage = "0"
+        blue_avg = 0
+        red_avg = 0
+
+    print(blue_jg + " kills " + red_jg + " " + str(blue_jg_kill_participation) + " (" +
+          blue_percentage + "%) " + "times before 15 minutes. Average of " + str(blue_avg) + " kills per match (before 15 minutes).")
+    print(red_jg + " kills " + blue_jg + " " + str(red_jg_kill_participation) + " (" +
+          red_percentage + "%) " + "times before 15 minutes. Average of " + str(blue_avg) + " kills per match (before 15 minutes).")
+    print("Data is the result of analyzing", relevant_match_counter, "matches.")
 
     form = DropForm(request.POST or None)
     context = {'form': form, 'submit_action': "", 'blue_jg': blue_jg, 'red_jg': red_jg, 'blue_jg_kp': blue_jg_kill_participation,
