@@ -247,3 +247,6 @@ if __name__ == "__main__":
     while True:
         main("na1")  # Create database for north american servers
         calculate()  # Calculate/Update matchups for given events
+
+    CURSOR.close()
+    database.close()
