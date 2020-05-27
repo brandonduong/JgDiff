@@ -18,7 +18,7 @@ their early pathing and playstyle to ensure a dominant victory.
 
 ## Usage ##
 * Simply visit [**JgDiff**](http://branduong.pythonanywhere.com/champselect/) and select two champions and click "Calculate".
-* Wait for JgDiff to calculate the results (may take up to 1 minutes depending on sample size!)
+* Wait for JgDiff to fetch results.
 * Results will then be displayed onscreen!
 
 ## Future! ##
