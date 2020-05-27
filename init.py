@@ -52,7 +52,6 @@ def main(region):
         sql = "INSERT IGNORE INTO matches (matchId, participants) VALUES (%s, %s)"
         val = (str(i), " " + ", ".join(map(str, participants)))
         CURSOR.execute(sql, val)
-        database.commit()
 
         counter = 0
 
