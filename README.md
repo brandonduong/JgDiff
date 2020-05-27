@@ -24,8 +24,6 @@ their early pathing and playstyle to ensure a dominant victory.
 ## Future! ##
 * Currently only takes into account the North American server (all ranked games), therefore hope to implement an option to change to the 
 Korean and European servers soon.
-* As more matches are added to the database, the longer the loading time, therefore hope to implement a faster
-algorithm + loading screen when waiting for results.
 
 ## Credits ##
 ### Special Thanks ###
