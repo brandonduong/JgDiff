@@ -179,7 +179,7 @@ def calculate():
             val = (str(red_jg_kill_participation + int(values[0][1])), champ_info_1["name"], champ_info_2["name"])
             CURSOR.execute(sql, val)
             sql = "UPDATE matchups SET relevent_matches = %s WHERE blue_champ = %s AND red_champ = %s"
-            val = (str(relevant_match_counter), champ_info_1["name"], champ_info_2["name"])
+            val = (str(relevant_match_counter + int(values[0][2])), champ_info_1["name"], champ_info_2["name"])
             CURSOR.execute(sql, val)
 
             print(values, champ_info_1["name"], champ_info_2["name"])
@@ -202,6 +202,7 @@ def calculate():
 
     # Remove all analyzed events to ensure no repeat calculations
     CURSOR.execute("TRUNCATE events")
+    CURSOR.execute("TRUNCATE matches")
 
 
 def initialize_new_patch():
