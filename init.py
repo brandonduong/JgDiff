@@ -70,9 +70,10 @@ def main(region):
                     sql = "INSERT INTO events (killerId, victimId, assistingParticipantIds, matchId) VALUES (%s, %s, %s, %s)"
                     val = (killerId, victimId, ",".join(map(str, assistingParticipants)), i)
                     CURSOR.execute(sql, val)
-                    database.commit()
 
             counter += 1
+
+        database.commit()
 
         print("examined: ", num_examined, "matches")
         num_examined += 1
