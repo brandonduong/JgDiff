@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from champselect.RIOT_KEY import database_pass
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -80,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'matches',
         'USER': 'root',
-        'PASSWORD': 'marioisfat',
+        'PASSWORD': database_pass(),
         'HOST': '127.0.0.1',
         'PORT': ''
     }
