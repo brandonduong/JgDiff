@@ -24,7 +24,3 @@ their early pathing and playstyle to ensure a dominant victory.
 ## Future! ##
 * Currently only takes into account the North American server (all ranked games), therefore hope to implement an option to change to the 
 Korean and European servers soon.
-
-## Credits ##
-### Special Thanks ###
-  * Janet Jin : For reminding me to eat while working and celebrating the successful hosting of JgDiff after 12 hours. :(
